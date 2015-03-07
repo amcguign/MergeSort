@@ -2,6 +2,7 @@ import socket
 
 import MergeSort	#Imports mergesort functions 
 import random 
+import getopt
 import sys
 import time 
 
@@ -22,16 +23,48 @@ def breakarray(array, n):
 
     return result
 
+def usage():
+	print "This program can be used in conjunction with arrays, sending them scrambled to clients and recieving the sorted array from the clients."
+	print "Correct syntax is 'python MergeServer.py -c <number of clients> -l <size of initial array> -h <shows this message>'."
+
+#getopt section
+try:
+	opts, args = getopt.getopt(sys.argv[1:], "hl:c:", ["help"])
+except getopt.GetoptError as err:
+	# print help information and exit:
+	print str(err) 
+	usage()
+	sys.exit(2)
+
+got_client = False
+got_length = False
+
+for o,a in opts:
+	if o == "-c":
+		print 'Number of clients='+a
+		clients = int(a)
+		got_client = True		
+	elif o == "-l":
+		print 'Length of array='+a
+		arraylength = int(a)
+		got_length = True
+	elif o in ("-h", "--help"):
+		usage()
+		sys.exit()
+	else:
+		assert False, "unhandled option"
+
+if not(got_client and got_length):
+	print "Error: You must enter both the number of clients and the array length"
+	usage()
+	sys.exit()
+
 #Create an array to be sorted 
-print 'Length of array='+sys.argv[1]
-arraylength = int(sys.argv[1])	#Length of array to be sorted 
 array = range(arraylength)	#Creates array 
 random.shuffle(array)	#Jumbles up array 
 print 'Unsorted array'
 print array
 
-print 'Number of clients='+sys.argv[2]
-clients = int(sys.argv[2])	#number of clients; 
 sections = breakarray(array, clients+1)	#splits array into sections for every processor; server is always included as processor 0 hence number of processors = clients+1
 
 start_time = time.time()	#Records start time 
