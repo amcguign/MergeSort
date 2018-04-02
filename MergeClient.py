@@ -15,12 +15,12 @@ while 1:
 array = eval(arraystring)
 print 'Received '+str(array)
 
-#Sorts the array which it is allocated
+# Sorts the array which it is allocated
 arraysort = MergeSort.mergesort(array)
 print 'Sorted array: '+str(arraysort)
 
-#Converts array into string to be sent back to server
+# Converts array into string to be sent back to server
 arraystring = repr(array)
-s.sendall(str(arraysort))	#Sends array string
+s.sendall(str(arraysort))  # Sends array string
 
 s.close()
